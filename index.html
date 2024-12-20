@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MPV Announcement System</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1E1E1E, #333333);
+            color: #FFFFFF;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 700px;
+            padding: 30px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .title-bar {
+            background-color: rgba(0, 0, 0, 0.5);
+            color: #FFFFFF;
+            padding: 15px 30px;
+            border-radius: 20px 20px 0 0;
+            font-size: 1.8em;
+            font-weight: bold;
+            text-align: left;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .form-group {
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .form-group label {
+            font-size: 1.1em;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: calc(100% - 30px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #FFFFFF;
+            outline: none;
+            resize: none;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            background-color: rgba(255, 255, 255, 0.3);
+            color: #000000;
+        }
+
+        .form-group button {
+            background-color: #6200EE;
+            color: #FFFFFF;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-transform: uppercase;
+        }
+
+        .form-group button:hover {
+            background-color: #3700B3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title-bar">MPV Announcement System</div>
+        <form id="webhookForm">
+            <div class="form-group">
+                <label for="title">Title:</label>
+                <input type="text" id="title">
+            </div>
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <textarea id="description" rows="4"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="color">Color:</label>
+                <input type="color" id="color">
+            </div>
+            <div class="form-group">
+                <label for="footer">Footer Text:</label>
+                <input type="text" id="footer">
+            </div>
+            <button type="button" onclick="sendMessage()">Send</button>
+        </form>
+    </div>
+
+    <script>
+        function sendMessage() {
+            const webhookUrl = 'https://discord.com/api/webhooks/1319782391694491669/GxeLaud08FN2GPaWJvBafcNbNx7gUL87LzICglA0mynigUtY-kxxGMXyOyGdmki5qQsq';
+            const title = document.getElementById('title').value;
+            const description = document.getElementById('description').value;
+            const color = document.getElementById('color').value.replace('#', '');
+            const footerText = document.getElementById('footer').value;
+            const timestamp = new Date().toISOString();  // Automatically generate current timestamp
+
+            const request = new XMLHttpRequest();
+            request.open('POST', webhookUrl);
+            request.setRequestHeader('Content-Type', 'application/json');
+
+            const embed = {
+                "title": title,
+                "description": description,
+                "color": parseInt(color, 16),
+                "timestamp": timestamp,
+                "footer": {
+                    "text": footerText
+                }
+            };
+
+            const params = {
+                embeds: [embed]
+            };
+
+            request.onreadystatechange = function () {
+                if (request.readyState === XMLHttpRequest.DONE) {
+                    if (request.status >= 200 && request.status < 300) {
+                        alert('Message sent successfully!');
+                    } else {
+                        console.error('Error:', request.responseText);
+                        alert('Failed to send message.');
+                    }
+                }
+            };
+
+            request.onerror = function () {
+                console.error('Network Error');
+                alert('Network Error: Failed to send message.');
+            };
+
+            try {
+                request.send(JSON.stringify(params));
+            } catch (error) {
+                console.error('Failed to send request:', error);
+                alert('Failed to send request.');
+            }
+        }
+    </script>
+</body>
+</html>
